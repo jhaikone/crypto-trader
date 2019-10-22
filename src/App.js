@@ -1,13 +1,12 @@
 import React from "react";
-import "./App.css";
-import { Header } from "./components/Header";
+import "./App.scss";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import thunk from "redux-thunk";
 
 import { Provider } from "react-redux";
 import { createStore, compose, applyMiddleware } from "redux";
 import rootReducer from "./reducers/rootReducer";
-import TradeContainer from "./routes/home/TradeContainer";
+import DashboardContainer from "./routes/dashboard/DashboardContainer";
 
 const store = createStore(
   rootReducer,
@@ -15,15 +14,12 @@ const store = createStore(
   compose(applyMiddleware(thunk))
 );
 
-const Index = () => <Header />;
-
 function App() {
   return (
     <Provider store={store}>
       <div className="App">
         <Router>
-          <Route path="/" component={Index} />
-          <Route path="/home/" component={TradeContainer} />
+          <Route path="/" component={DashboardContainer} />
         </Router>
       </div>
     </Provider>

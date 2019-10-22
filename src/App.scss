@@ -1,6 +1,10 @@
+@import "variables.scss";
+
 .App {
   text-align: center;
   height: 100%;
+  width: $maximumWidth;
+  margin: 80px auto 0 auto;
 }
 
 .App-logo {

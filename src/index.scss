@@ -1,0 +1,122 @@
+@import "./variables.scss";
+
+html {
+  height: 100%;
+}
+
+body {
+  background-color: $pageBackground;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+#root {
+  height: 100%;
+}
+
+p {
+  color: $text;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: $text;
+}
+
+h2 {
+  font-size: $fontSize_xxxlarge;
+}
+
+h3 {
+  font-size: $fontSize_large;
+}
+
+.no-decoration {
+  font-weight: initial;
+  text-decoration: none;
+}
+
+.no-margin {
+  margin: 0;
+}
+
+@font-face {
+  font-family: "hardscience";
+  src: local("hardscience"),
+    url(./assets/fonts/hardscience/hardscience.otf) format("opentype");
+}
+
+.largeContainer {
+  padding: 0 32px;
+  max-width: $maximumWidth;
+  width: 100%;
+  height: $largeContainerHeight;
+}
+
+.flex {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.row {
+  flex-direction: row;
+}
+
+.flex-start {
+  align-items: flex-start;
+}
+
+.flex-start-row {
+  justify-content: flex-start;
+}
+
+.flex-end {
+  align-items: flex-end;
+}
+
+.flex-end-row {
+  justify-content: flex-end;
+}
+
+.flex-center-row {
+  align-items: center;
+}
+
+.flex-center {
+  justify-content: center;
+  align-items: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.flex-1 {
+  flex: 1;
+}
+.flex-2 {
+  flex: 2;
+}
+.flex-3 {
+  flex: 3;
+}
+.flex-4 {
+  flex: 4;
+}
+.flex-5 {
+  flex: 5;
+}

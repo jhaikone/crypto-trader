@@ -2,20 +2,21 @@ import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { fileConverter } from "../utils/fileConverter";
 
-export const Dropzone = ({ onDone }) => {
+import "./Dropzone.scss";
+
+const label = "Please drag n drop\nyour Binance order history";
+
+export const Dropzone = ({ onDone, children }) => {
   const onDrop = useCallback(acceptedFiles => {
-    const data = fileConverter.xlsxToJson(acceptedFiles[0], onDone);
+    fileConverter.xlsxToJson(acceptedFiles[0], onDone);
   }, []);
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   return (
-    <div {...getRootProps()}>
+    <div className="dropzoneContainer" {...getRootProps()}>
       <input {...getInputProps()} />
-      {isDragActive ? (
-        <p>Drop the files here ...</p>
-      ) : (
-        <p>Drag 'n' drop some files here, or click to select files</p>
-      )}
+      <h1>{`${label}`}</h1>
+      {children}
     </div>
   );
 };
