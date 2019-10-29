@@ -44,6 +44,16 @@ h3 {
   font-size: $fontSize_large;
 }
 
+h4 {
+  font-size: $fontSize_medium;
+}
+h5 {
+  font-size: $fontSize_small;
+}
+h6 {
+  font-size: $fontSize_xsmall;
+}
+
 .no-decoration {
   font-weight: initial;
   text-decoration: none;
@@ -53,6 +63,14 @@ h3 {
   margin: 0;
 }
 
+.margin-left {
+  margin-left: $spacing;
+}
+
+.full-width {
+  width: 100%;
+}
+
 @font-face {
   font-family: "hardscience";
   src: local("hardscience"),
@@ -60,10 +78,28 @@ h3 {
 }
 
 .largeContainer {
-  padding: 0 32px;
-  max-width: $maximumWidth;
-  width: 100%;
+  padding: 0 $content-spacing;
   height: $largeContainerHeight;
+}
+
+.smallContainer {
+  height: $smallContainerHeight;
+  padding: 0 $content-spacing;
+}
+
+.recharts-wrapper {
+}
+
+.grid-spacing {
+  margin: $content-spacing;
+}
+
+.grid-spacing-vertical {
+  height: $content-spacing;
+}
+
+.grid-spacing-horizontal {
+  width: $content-spacing;
 }
 
 .flex {
@@ -72,7 +108,7 @@ h3 {
   flex-direction: column;
 }
 
-.row {
+.flex-row {
   flex-direction: row;
 }
 

@@ -1,0 +1,15 @@
+@import "../../../../variables.scss";
+
+.Statistics {
+  margin-left: $content-spacing;
+  height: 100%;
+  .title {
+    color: #5f656e;
+    text-align: left;
+  }
+  .label {
+    color: white;
+    opacity: 0.8;
+    text-align: left;
+  }
+}

@@ -4,22 +4,23 @@ import { actions as tradesActions } from "../../reducers/tradesReducer";
 import { Dashboard } from "./Dashboard";
 import InsertBalance from "./insertBalance/InsertBalance";
 
-const DashboardContainer = ({ data, onFileLoaded }) => {
+const DashboardContainer = ({ data, activeCurrency, onFileLoaded }) => {
   return (
     <React.Fragment>
       {!data && !data.trades && !data.trades.length ? (
         <InsertBalance onFileLoaded={onFileLoaded} />
       ) : (
-        <Dashboard data={data} />
+        <Dashboard data={data} activeCurrency={activeCurrency} />
       )}
     </React.Fragment>
   );
 };
 
 const mapStateToProps = state => {
-  const { data } = state.trades;
+  const { data, activeCurrency } = state.trades;
   return {
-    data
+    data,
+    activeCurrency
   };
 };
 

@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Bitcoin",
+    "symbol": "BTC",
+    "priority": 1
+  },
+  {
+    "name": "Etheureum",
+    "symbol": "ETH",
+    "priority": 2
+  }
+]

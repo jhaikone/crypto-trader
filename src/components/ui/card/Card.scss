@@ -1,0 +1,17 @@
+@import "../../../variables.scss";
+
+.Card {
+}
+
+.CardHeader {
+  background-color: $background-light;
+  h3 {
+    color: $primary;
+  }
+}
+
+.CardBody {
+  position: relative;
+  height: 300px;
+  background-color: $background;
+}

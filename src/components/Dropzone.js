@@ -7,9 +7,12 @@ import "./Dropzone.scss";
 const label = "Please drag n drop\nyour Binance order history";
 
 export const Dropzone = ({ onDone, children }) => {
-  const onDrop = useCallback(acceptedFiles => {
-    fileConverter.xlsxToJson(acceptedFiles[0], onDone);
-  }, []);
+  const onDrop = useCallback(
+    acceptedFiles => {
+      fileConverter.xlsxToJson(acceptedFiles[0], onDone);
+    },
+    [onDone]
+  );
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   return (

@@ -10,7 +10,7 @@ class InsertBalance extends Component {
       <div className="insertBalanceContainer">
         <div className="dropzone">
           <Dropzone onDone={this.props.onFileLoaded}>
-            <img className="plus" src={Plus} />
+            <img className="plus" src={Plus} alt="plus" />
           </Dropzone>
         </div>
       </div>

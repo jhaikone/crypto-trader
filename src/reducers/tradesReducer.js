@@ -13,7 +13,7 @@ const data = (
     balances: mockBalances,
     trades: mockTrades,
     capital: [
-      { currency: "ETH", total: "1.00" },
+      { currency: "ETH", total: "1.160679" },
       { currency: "AION", total: "0" }
     ]
   },
@@ -23,6 +23,14 @@ const data = (
     case TYPES.INIT_TRADES: {
       return { ...action.data };
     }
+    default: {
+      return state;
+    }
+  }
+};
+
+const activeCurrency = (state = "ETH", action) => {
+  switch (action.type) {
     default: {
       return state;
     }
@@ -41,5 +49,6 @@ export const actions = {
 };
 
 export default combineReducers({
-  data
+  data,
+  activeCurrency
 });
