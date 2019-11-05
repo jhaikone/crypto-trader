@@ -1,72 +1,88 @@
-import React from "react";
+import React, { Component } from "react";
 import { TitleCard } from "./components/TitleCard";
-import tradeCalculator from "../../utils/tradeCalculator";
-import { Card, CardHeader, GridSpace, CardBody } from "../../components/ui";
+import { Card, CardHeader, CardBody } from "../../components/ui";
 import Trendline from "./components/Trendline/Trendline";
-import chartHelper from "../../utils/chartHelper";
 import Barchart from "./components/Barchart/Barchart";
 import "./Dashboard.scss";
 import Statistics from "./components/Statistics/Statistics";
+import UiTable from "../../components/ui/table/UiTable";
+import chartHelper from "../../utils/chartHelper";
+import { Filter } from "../../components/ui/filter/FIlter";
 
-export const Dashboard = ({ data, activeCurrency }) => {
-  const activeData = tradeCalculator.getActiveTradeBalance(
-    data,
-    activeCurrency
-  );
-  const activePair = data.trades.find(x => x.Pair.includes(activeCurrency));
-  const capital = data.capital.find(x => x.currency === activeCurrency);
+const LeftContent = ({ children }) => (
+  <div className="LeftContent flex-1 margin">{children}</div>
+);
 
-  const steps = tradeCalculator.getTrendlineStep(activePair, capital.total);
-  const trends = chartHelper.createTradesData(steps);
-  const portfolioData = chartHelper.createPortfolioData(capital.total, steps);
-  const statistics = chartHelper.createStatisticsData(steps, activeData);
+const RightContent = ({ children }) => (
+  <div className="RightContent flex-2 margin">{children}</div>
+);
 
-  console.log("data so far", {
-    statistics,
-    portfolioData,
-    trends,
-    steps,
-    data,
-    activeCurrency,
-    activeData
-  });
+const FilterRow = ({ filters, onClick }) => (
+  <div className="margin-top flex flex-row flex-wrap">
+    {filters.map(filter => (
+      <Filter key={filter.label} data={filter} onClick={onClick} />
+    ))}
+  </div>
+);
 
-  return (
-    <React.Fragment>
-      <TitleCard data={activeData} />
+class Dashboard extends Component {
+  componentDidMount() {
+    /*     const mockData = chartHelper.getMockData();
 
-      <GridSpace orientation={"vertical"} />
+    this.props.onInit({
+      ...mockData
+    }); */
+  }
 
-      <div className="flex flex-row">
-        <div className="LeftContent">
+  render() {
+    const { data } = this.props;
+
+    return (
+      <div className="Dashboard">
+        <TitleCard balances={data.wallet} />
+
+        <FilterRow
+          filters={this.props.filters}
+          onClick={this.props.onFilterPressed}
+        />
+
+        <div className="flex flex-row flex-wrap">
+          <LeftContent>
+            <Card>
+              <CardHeader label="Statistics"></CardHeader>
+              <CardBody>
+                <Statistics data={data.statistics} />
+              </CardBody>
+            </Card>
+          </LeftContent>
+
+          <RightContent>
+            <Card>
+              <CardHeader label="Portfolio performance"></CardHeader>
+              <CardBody>
+                <Trendline data={data.portfolioPerformance} />
+              </CardBody>
+            </Card>
+          </RightContent>
+        </div>
+
+        <div className="margin">
           <Card>
-            <CardHeader label="Statistics"></CardHeader>
+            <CardHeader label="Single Trade Profits"></CardHeader>
             <CardBody>
-              <Statistics data={statistics} />
+              <Barchart data={data.tradeTrends} />
             </CardBody>
           </Card>
         </div>
 
-        <GridSpace orientation={"horizontal"} />
-
-        <div className="flex-1">
+        <div className="TableContainer">
           <Card>
-            <CardHeader label="Portfolio performance"></CardHeader>
-            <CardBody>
-              <Trendline data={portfolioData} />
-            </CardBody>
+            <UiTable data={data.tableData} />
           </Card>
         </div>
       </div>
+    );
+  }
+}
 
-      <GridSpace orientation={"vertical"} />
-
-      <Card>
-        <CardHeader label="Single Trade Profits"></CardHeader>
-        <CardBody>
-          <Barchart data={trends} />
-        </CardBody>
-      </Card>
-    </React.Fragment>
-  );
-};
+export default Dashboard;

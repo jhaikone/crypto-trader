@@ -1,0 +1,26 @@
+@import "../../../variables.scss";
+
+.column-BUY {
+  background-color: $profit;
+  color: #aaffd6;
+  margin: 4px;
+  border-radius: 20px;
+  height: 20px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  width: 60px;
+  margin-left: -4px;
+}
+.column-SELL {
+  background-color: $loss;
+  color: #ffbac0;
+  margin: 4px;
+  border-radius: 20px;
+  height: 20px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  width: 60px;
+  margin-left: -4px;
+}

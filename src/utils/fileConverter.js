@@ -1,5 +1,6 @@
 import XLSX from "xlsx";
 import BigJs from "big.js";
+import chartHelper from "./chartHelper";
 
 const TRADING_PAIRS = {
   ETH: "ETH",
@@ -26,19 +27,19 @@ const getTotalAltBalance = (buyTrades, sellTrades) => {
 };
 
 const _calculateMainBuyTradeBalance = buyTrades => {
-  return _calculateBalance(buyTrades, "SellData");
+  return _calculateBalance(buyTrades, "sellData");
 };
 
 const _calculateMainSellTradeBalance = sellTrades => {
-  return _calculateBalance(sellTrades, "BuyData");
+  return _calculateBalance(sellTrades, "buyData");
 };
 
 const _calculateAltBuyTradeBalance = buyTrades => {
-  return _calculateBalance(buyTrades, "BuyData");
+  return _calculateBalance(buyTrades, "buyData");
 };
 
 const _calculateAltSellTradeBalance = sellTrades => {
-  return _calculateBalance(sellTrades, "SellData");
+  return _calculateBalance(sellTrades, "sellData");
 };
 
 const _calculateBalance = (trades, type) => {
@@ -48,16 +49,16 @@ const _calculateBalance = (trades, type) => {
   return trades.reduce((currentValue, trade) => {
     const o = trade[type];
     if (!o) return new BigJs(currentValue);
-    return new BigJs(currentValue).plus(o.Total);
+    return new BigJs(currentValue).plus(o.total);
   }, 0);
 };
 
 const createPairs = trades => {
   return trades.map(x => {
     return {
-      Pair: x.Pair,
-      buyTrades: x.Trades.filter(x => x.Type === "BUY"),
-      sellTrades: x.Trades.filter(x => x.Type === "SELL")
+      pair: x.pair,
+      buyTrades: x.trades.filter(x => x.type === "BUY"),
+      sellTrades: x.trades.filter(x => x.type === "SELL")
     };
   });
 };
@@ -79,28 +80,28 @@ const createTradePairStacks = trades => {
   const array = [];
 
   const _trades = trades.map(trade => {
-    trade.Status = trade.status;
-    trade.Date = trade["Date(UTC)"];
+    trade.date = trade["Date(UTC)"];
     delete trade["Date(UTC)"];
-    delete trade.status;
     return trade;
   });
 
   _trades.forEach((row, index) => {
-    if (row.Status === "Filled") {
-      const mainTradeObject = { ...row, Transactions: [] };
+    if (row.status === "Filled") {
+      const newObj = objectToLowerCase(row);
+
+      const mainTradeObject = { ...newObj, transactions: [] };
       let stillInSameTradeStack = true;
       let i = 2;
 
       while (stillInSameTradeStack) {
         const trade = trades[index + i];
-        if (trade && !trade.Status) {
-          mainTradeObject.Transactions.push({
-            Fee: trade.AvgTradingPrice,
-            Total: trade.OrderAmount,
-            Filled: trade.OrderPrice,
-            TradingPrice: trade.Type,
-            Date: trade.Pair
+        if (trade && !trade.status) {
+          mainTradeObject.transactions.push({
+            fee: trade.AvgTradingPrice,
+            total: trade.OrderAmount,
+            filled: trade.OrderPrice,
+            tradingPrice: trade.Type,
+            date: trade.Pair
           });
           i++;
         } else {
@@ -108,54 +109,54 @@ const createTradePairStacks = trades => {
         }
       }
 
-      let FeeCurrency;
-      let TotalFee = mainTradeObject.Transactions.reduce(
+      let feeCurrency;
+      let totalFee = mainTradeObject.transactions.reduce(
         (currentValue, trade) => {
-          let value = new BigJs(trade.Fee.replace(/[^\d.-]/g, ""));
-          if (!FeeCurrency) {
-            FeeCurrency = trade.Fee.replace(/[0-9.]/g, "");
+          let value = new BigJs(trade.fee.replace(/[^\d.-]/g, ""));
+          if (!feeCurrency) {
+            feeCurrency = trade.fee.replace(/[0-9.]/g, "");
           }
           return value.add(currentValue);
         },
         0
       );
 
-      const BuyData = TRADING_PAIRS[FeeCurrency]
-        ? TRADING_PAIRS[FeeCurrency]
-        : FeeCurrency;
+      const BuyData = TRADING_PAIRS[feeCurrency]
+        ? TRADING_PAIRS[feeCurrency]
+        : feeCurrency;
 
       let sellCurrency;
 
       Object.keys(TRADING_PAIRS).forEach(key => {
         if (
-          mainTradeObject.Pair.includes(key) &&
-          mainTradeObject.Type === "BUY"
+          mainTradeObject.pair.includes(key) &&
+          mainTradeObject.type === "BUY"
         ) {
           sellCurrency = key;
         }
       });
 
-      mainTradeObject.BuyData = {
-        TotalFee: TotalFee.valueOf(),
-        Total:
-          mainTradeObject.Type === "BUY"
-            ? new BigJs(mainTradeObject.Filled).minus(TotalFee).valueOf()
-            : new BigJs(mainTradeObject.Total).minus(TotalFee).valueOf(),
-        Currency: BuyData
+      mainTradeObject.buyData = {
+        totalFee: totalFee.valueOf(),
+        total:
+          mainTradeObject.type === "BUY"
+            ? new BigJs(mainTradeObject.filled).minus(totalFee).valueOf()
+            : new BigJs(mainTradeObject.total).minus(totalFee).valueOf(),
+        currency: BuyData
       };
 
-      mainTradeObject.SellData =
-        mainTradeObject.Type === "BUY"
+      mainTradeObject.sellData =
+        mainTradeObject.type === "BUY"
           ? {
-              Total: mainTradeObject.Total,
-              Currency: sellCurrency
+              total: mainTradeObject.total,
+              currency: sellCurrency
             }
           : {
-              Total: mainTradeObject.Filled,
-              Currency: mainTradeObject.Pair.split(BuyData)[0]
+              total: mainTradeObject.filled,
+              currency: mainTradeObject.pair.split(BuyData)[0]
             };
 
-      mainTradeObject.FeeCurrency = FeeCurrency;
+      mainTradeObject.feeCurrency = feeCurrency;
 
       array.push(mainTradeObject);
     }
@@ -165,41 +166,54 @@ const createTradePairStacks = trades => {
 };
 
 const getValidTrades = originalArray => {
-  const appendedData = createTradePairStacks(originalArray);
-  let foundFirstBuyOrder = false;
-  return appendedData
-    .reverse()
-    .map(tradeRow => {
-      if (foundFirstBuyOrder === false && tradeRow.Type === "SELL") {
-        return null;
-      } else {
-        foundFirstBuyOrder = true;
-        return { ...tradeRow };
-      }
-    })
-    .filter(x => x);
+  return chartHelper.createValidTraidingPairs(
+    createTradePairStacks(originalArray).reverse()
+  );
 };
 
 const _getTradingPairs = filteredList => {
   const pairs = [];
   filteredList.forEach(row => {
-    const alreadyInList = pairs.find(x => x === row.Pair);
+    const alreadyInList = pairs.find(x => x === row.pair);
     if (alreadyInList) return;
-    pairs.push(row.Pair);
+    pairs.push(row.pair);
   });
   return pairs;
+};
+
+const objectToLowerCase = obj => {
+  let key,
+    keys = Object.keys(obj);
+  let n = keys.length;
+  const newobj = {};
+  while (n--) {
+    key = keys[n];
+    const newKey = toCamelCase(key);
+    newobj[newKey] = obj[key];
+    if (newKey === "sellData" || newKey === "buyData") {
+      newobj[newKey] = objectToLowerCase(newobj[newKey]);
+    }
+  }
+  return newobj;
 };
 
 const createTradesByPair = filteredList => {
   const tradingPairs = _getTradingPairs(filteredList);
 
   return tradingPairs.map(pair => {
-    let object = { Pair: pair };
+    let object = { pair: pair };
     return {
       ...object,
-      Trades: filteredList.filter(x => x.Pair === pair)
+      trades: filteredList.filter(x => x.pair === pair)
     };
   });
+};
+
+const toCamelCase = string => {
+  if (!string) return "";
+  const first = string[0].toLowerCase();
+  const lastpart = string.slice(1, string.length);
+  return `${first}${lastpart}`;
 };
 
 const createJSONfromWorkbook = workbook => {
@@ -226,7 +240,7 @@ const createJSONfromWorkbook = workbook => {
     );
 
     const mainTradingCurrencybalance = {
-      currency: pair.buyTrades[0].SellData.Currency,
+      currency: pair.buyTrades[0].sellData.currency,
       total: totalMainBalance
     };
 
@@ -235,7 +249,7 @@ const createJSONfromWorkbook = workbook => {
     const totalAltBalance = getTotalAltBalance(pair.buyTrades, pair.sellTrades);
 
     const altTradingCurrencybalance = {
-      currency: pair.sellTrades[0].SellData.Currency,
+      currency: pair.sellTrades[0].sellData.currency,
       total: totalAltBalance
     };
 
@@ -253,7 +267,6 @@ export const fileConverter = {
       const workbook = XLSX.read(result, { type: "binary" });
 
       const json = createJSONfromWorkbook(workbook);
-
       onDone(json);
     };
 

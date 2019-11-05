@@ -6,8 +6,8 @@ const roundWithOffset = (number, increment, offset) => {
 
 const _getPercentage = (a, b) => {
   return Bigjs(a)
-    .div(new Bigjs(b))
-    .minus(new Bigjs(1))
+    .div(Bigjs(b))
+    .minus(Bigjs(1))
     .times(100);
 };
 
@@ -22,30 +22,30 @@ const getPositionPercentage = (buyPosition, sellPosition) => {
 };
 
 const tradeCalculator = {
-  getProfits: (capital, trades) => {
-    return 0;
-  },
-  getTradeBalances: (balances, capital) => {
+  getTradeBalances: balances => {
     const tradeBalances = [];
-    balances.forEach(balance => {
-      const cap = capital.find(x => x.currency === balance.currency);
-      if (!cap || Number(cap.total) === 0) return;
-      const profit = new Bigjs(cap.total).plus(new Bigjs(balance.total));
-      const percentage = _getPercentage(profit, cap.total);
+    const filtered = balances.filter(
+      b => Number(b.startingTotal) > 0 || Number(b.total > 0)
+    );
+    filtered.forEach(balance => {
+      const percentage = _getPercentage(balance.total, balance.startingTotal);
       const precision = percentage.valueOf().indexOf(".");
       tradeBalances.push({
-        currency: cap.currency,
-        startingTotal: cap.total,
-        total: profit.valueOf(),
+        currency: balance.currency,
+        startingTotal: balance.startingTotal,
+        total: balance.total,
         profitGain: balance.total,
-        profitPercentage: percentage.toPrecision(precision + 2)
+        profitPercentage: percentage.toPrecision(precision + 2),
+        absoluteGain: Bigjs(balance.total)
+          .minus(balance.startingTotal)
+          .valueOf()
       });
     });
     return tradeBalances;
   },
   getActiveTradeBalance: (data, activeCurrency) => {
-    const { balances, capital } = data;
-    const trades = tradeCalculator.getTradeBalances(balances, capital);
+    const { balances } = data;
+    const trades = tradeCalculator.getTradeBalances(balances);
     if (!trades || !trades.length) return {};
     return trades.find(x => x.currency === activeCurrency) || {};
   },
@@ -61,28 +61,30 @@ const tradeCalculator = {
   getTrendlineStep: (activePair, startingCap) => {
     const steps = [];
     let cap = Bigjs(startingCap);
-    const buys = activePair.Trades.filter(x => x.Type === "BUY")
+    const buys = activePair.trades
+      .filter(x => x.type === "BUY")
       .map(x => {
-        const sellTotal = Bigjs(x.SellData.Total);
+        const sellTotal = Bigjs(x.sellData.total);
         cap = sellTotal > cap ? sellTotal : cap;
         return {
-          price: Bigjs(x.SellData.Total)
-            .div(x.BuyData.Total)
+          price: Bigjs(x.sellData.total)
+            .div(x.buyData.total)
             .valueOf(),
-          total: x.BuyData.Total,
-          date: x.Date,
+          total: x.buyData.total,
+          date: x.date,
           capitalWeight: sellTotal.div(cap).valueOf()
         };
       })
       .sort((a, b) => new Date(a.date) - new Date(b.date));
-    const sells = activePair.Trades.filter(x => x.Type === "SELL")
+    const sells = activePair.trades
+      .filter(x => x.type === "SELL")
       .map(x => {
         return {
-          price: Bigjs(x.BuyData.Total)
-            .div(x.SellData.Total)
+          price: Bigjs(x.buyData.total)
+            .div(x.sellData.total)
             .valueOf(),
-          total: x.SellData.Total,
-          date: x.Date
+          total: x.sellData.total,
+          date: x.date
         };
       })
       .sort((a, b) => new Date(a.date) - new Date(b.date));

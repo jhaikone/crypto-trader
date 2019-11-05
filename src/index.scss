@@ -63,8 +63,20 @@ h6 {
   margin: 0;
 }
 
+.margin {
+  margin: $spacing;
+}
+
 .margin-left {
   margin-left: $spacing;
+}
+
+.margin-top {
+  margin-top: 2rem;
+}
+
+.margin-bottom {
+  margin-bottom: 2rem;
 }
 
 .full-width {
@@ -87,9 +99,6 @@ h6 {
   padding: 0 $content-spacing;
 }
 
-.recharts-wrapper {
-}
-
 .grid-spacing {
   margin: $content-spacing;
 }
@@ -106,6 +115,10 @@ h6 {
   display: flex;
   flex: 1;
   flex-direction: column;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
 }
 
 .flex-row {

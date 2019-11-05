@@ -1,5 +1,10 @@
 @import "../variables.scss";
 
 .dropzoneContainer {
-  padding: 20%;
+  border: 10px dotted #1c2230;
+  padding: 100px;
+
+  .dropzone-safe-margin {
+    padding: 0 20% 20% 20%;
+  }
 }

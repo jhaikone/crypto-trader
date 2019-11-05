@@ -13,6 +13,7 @@
 
 /src/assets/mock-data
 
+/src/firebaseConfig.js
 
 # misc
 .DS_Store

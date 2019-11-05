@@ -1,0 +1,19 @@
+@import "../../../variables.scss";
+
+.Filter {
+  width: 100px;
+  height: 24px;
+  border-radius: 8px;
+  color: $primary;
+  background-color: white;
+  font-weight: bold;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.active {
+  color: white;
+  background-color: $primary;
+}

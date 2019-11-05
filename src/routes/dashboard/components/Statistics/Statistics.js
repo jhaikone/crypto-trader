@@ -15,9 +15,9 @@ const Row = ({ children }) => (
 
 const Statistics = ({ data }) => {
   return (
-    <div className="Statistics flex flex-start">
-      <div>
-        <h5>{data.header}</h5>
+    <div id="Statistics" className="Statistics flex flex-start">
+      <div className="margin-bottom">
+        <h5 className="no-margin">{data.header}</h5>
       </div>
       {data.rows.map(row => (
         <Row key={row.id}>
@@ -33,5 +33,7 @@ const Statistics = ({ data }) => {
 export default Statistics;
 
 Statistics.defaultProps = {
-  data: {}
+  data: {
+    rows: []
+  }
 };

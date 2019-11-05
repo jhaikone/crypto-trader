@@ -6,22 +6,32 @@ import formatter from "../../../utils/formatter";
 const Label = ({ classes, header, value }) => (
   <div className={classes}>
     <div>
-      <h3 className="no-margin no-decoration">{header}</h3>
-    </div>
-    <div>
-      <h2 className="no-margin no-decoration">{value}</h2>
+      <h2 className="no-margin">{header}</h2>
     </div>
   </div>
 );
 
-export const TitleCard = ({ data }) => {
+const Balance = ({ data }) => (
+  <div className="balance">
+    <h3 className="no-margin label">{data.currency}</h3>
+    <h3 className="no-margin">{formatter.formatCurrency(data.total)}</h3>
+  </div>
+);
+
+export const TitleCard = ({ balances }) => {
   return (
-    <div className="largeContainer flex flex-row flex-start flex-center-row titleCardContainer">
-      <Label
-        classes="flex-start text-left flex-3"
-        header={`${data.currency} Portfolio`}
-        value={`${formatter.formatCurrency(data.total)}`}
-      />
+    <div className="largeContainer flex flex-row flex-start flex-center-row margin titleCardContainer">
+      <Label classes="flex-start text-left flex-3" header="Portfolio" />
+      {balances.map(balance => (
+        <React.Fragment key={balance.currency}>
+          <Balance data={balance} />
+          <div className="divider"></div>
+        </React.Fragment>
+      ))}
     </div>
   );
+};
+
+TitleCard.defaultProps = {
+  balances: []
 };

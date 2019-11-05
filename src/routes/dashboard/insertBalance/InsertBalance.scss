@@ -1,31 +1,41 @@
 @import "../../../variables.scss";
 
-.insertBalanceContainer {
+.InsertBalanceContainer {
   height: 100%;
   width: 100%;
-}
 
-.dropzone {
-  flex: 1 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  flex-direction: column;
-}
+  .dropzone {
+    flex: 1 1;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+  }
 
-.icon {
-  font-size: 200px !important;
-  color: #3f51b5;
-}
+  .icon {
+    font-size: 200px !important;
+    color: #3f51b5;
+  }
 
-.trader {
-  font-family: "hardscience";
-  font-size: 100px;
-  color: #3e51b5;
-  text-shadow: 2px 2px 4px rgba(255, 0, 0, 0.2);
-}
+  .trader {
+    font-family: "hardscience";
+    font-size: 100px;
+    color: #3e51b5;
+    text-shadow: 2px 2px 4px rgba(255, 0, 0, 0.2);
+  }
 
-.plus {
-  margin-top: $spacing * 4;
+  .plus {
+    margin-top: $spacing * 4;
+  }
+
+  .Circle {
+    width: 80px;
+    height: 80px;
+    margin: $spacing;
+    background-color: transparent;
+    border: 5px dotted #1c2230;
+  }
+
+  .CircleRow {
+    margin-top: $spacing * 4;
+  }
 }

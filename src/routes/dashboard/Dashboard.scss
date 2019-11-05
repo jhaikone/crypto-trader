@@ -1,6 +1,20 @@
 @import "../../variables.scss";
 
-.LeftContent {
-  max-width: 250px;
-  min-width: 250px;
+.DashboardContainer {
+  .LeftContent {
+    min-width: 250px;
+    width: 100%;
+  }
+
+  .RightContent {
+    min-width: 350px;
+    width: 100%;
+  }
+
+  .Dashboard {
+    margin: -$spacing;
+  }
+  .TableContainer {
+    margin: $spacing * 2 $spacing;
+  }
 }
