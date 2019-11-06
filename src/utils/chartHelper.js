@@ -60,6 +60,13 @@ const chartHelper = {
   getDefaultFilters: () => {
     return defaultFilters;
   },
+  hasDataLoaded: data => {
+    return !!(
+      data &&
+      data.portfolioPerformance &&
+      data.portfolioPerformance.length
+    );
+  },
   getMockData: () => {
     return {
       balances: mockBalances,

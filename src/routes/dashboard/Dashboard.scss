@@ -1,6 +1,9 @@
 @import "../../variables.scss";
 
 .DashboardContainer {
+  padding: 2rem;
+  background-color: $pageBackground;
+
   .LeftContent {
     min-width: 250px;
     width: 100%;

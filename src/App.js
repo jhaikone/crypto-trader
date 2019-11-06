@@ -8,7 +8,6 @@ import { createStore, compose, applyMiddleware } from "redux";
 import rootReducer from "./reducers/rootReducer";
 import DashboardContainer from "./routes/dashboard/DashboardContainer";
 
-import background from "./assets/images/background.png";
 import { Card } from "./components/ui";
 
 const AppComponent = ({ children }) => (
@@ -28,7 +27,6 @@ class App extends PureComponent {
     return (
       <Provider store={store}>
         <AppComponent>
-          <img className="background-image" src={background} alt="background" />
           <Router>
             <Route path="/" component={DashboardContainer} />
           </Router>

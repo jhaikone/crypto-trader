@@ -5,13 +5,18 @@ import Dashboard from "./Dashboard";
 import InsertBalance from "./insertBalance/InsertBalance";
 import chartHelper from "../../utils/chartHelper";
 
-const hasDataLoaded = data => {
-  return !!(
-    data &&
-    data.portfolioPerformance &&
-    data.portfolioPerformance.length
-  );
-};
+import background from "../../assets/images/background.png";
+import backgroundvideo from "../../assets/videos/background.mp4";
+
+const Background = ({ isDataLoaded }) => (
+  <React.Fragment>
+    {isDataLoaded ? (
+      <img className="background-image" src={background} alt="background" />
+    ) : (
+      <video src={backgroundvideo} className="background-video" autoPlay loop />
+    )}
+  </React.Fragment>
+);
 
 const DashboardContainer = ({
   data,
@@ -19,9 +24,12 @@ const DashboardContainer = ({
   filters,
   onFilterPressed
 }) => {
+  const hasDataLoaded = chartHelper.hasDataLoaded(data);
   return (
-    <div className="DashboardContainer">
-      {hasDataLoaded(data) ? (
+    <div>
+      <Background isDataLoaded={hasDataLoaded} />
+
+      {hasDataLoaded ? (
         <Dashboard
           onInit={onFileLoaded}
           data={data}
