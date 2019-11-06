@@ -83,12 +83,6 @@ h6 {
   width: 100%;
 }
 
-@font-face {
-  font-family: "hardscience";
-  src: local("hardscience"),
-    url(./assets/fonts/hardscience/hardscience.otf) format("opentype");
-}
-
 .largeContainer {
   padding: 0 $content-spacing;
   height: $largeContainerHeight;
